@@ -1,14 +1,14 @@
 # Claude Code Multi-Provider Setup
 
-Seamlessly switch between Anthropic, Kimi, and GLM APIs in Claude Code without editing config files.
+Seamlessly switch between Anthropic, Kimi, GLM, and MiniMax APIs in Claude Code without editing config files.
 
 ## Features
 
-- **One-command provider switching**: `cc-use anthropic|kimi|glm`
+- **One-command provider switching**: `cc-use anthropic|kimi|glm|minimax`
 - **Environment-based auth**: No hardcoded credentials in Claude config
 - **Auto model selection**: GLM uses `glm-5` by default
 - **Status checks**: `cc-status` shows all configured providers
-- **Convenience aliases**: `cc-anthropic`, `cc-kimi`, `cc-glm` for one-shot launches
+- **Convenience aliases**: `cc-anthropic`, `cc-kimi`, `cc-glm`, `cc-minimax` for one-shot launches
 
 ## Supported Providers
 
@@ -17,6 +17,7 @@ Seamlessly switch between Anthropic, Kimi, and GLM APIs in Claude Code without e
 | Anthropic | `https://api.anthropic.com` | Claude 3.5 Sonnet | `ANTHROPIC_API_KEY` |
 | Kimi | `https://api.moonshot.ai/anthropic` | Kimi Coding Plan | `KIMI_API_KEY` |
 | GLM | `https://api.z.ai/api/anthropic` | GLM-5 | `ZAI_API_KEY` |
+| MiniMax | `https://api.minimaxi.chat/anthropic` | MiniMax-Text-01 | `MINIMAX_API_KEY` |
 
 ## Quick Start
 
@@ -47,11 +48,13 @@ cc
 | `cc-use anthropic` | Switch to Anthropic API |
 | `cc-use kimi` | Switch to Kimi API |
 | `cc-use glm` | Switch to GLM API |
+| `cc-use minimax` | Switch to MiniMax API |
 | `cc-status` | Show current provider and key status |
 | `cc` | Launch Claude Code with current provider |
 | `cc-anthropic` | One-shot: switch to Anthropic and launch |
 | `cc-kimi` | One-shot: switch to Kimi and launch |
 | `cc-glm` | One-shot: switch to GLM and launch |
+| `cc-minimax` | One-shot: switch to MiniMax and launch |
 
 ## Setup Details
 
@@ -75,6 +78,7 @@ Edit `~/.claude/.env`:
 ANTHROPIC_API_KEY=sk-ant-api03-...
 KIMI_API_KEY=sk-kimi-...
 ZAI_API_KEY=...
+MINIMAX_API_KEY=...
 ```
 
 ### 3. Install Provider Switcher
@@ -112,6 +116,7 @@ Ensure your API keys are set in `~/.claude/.env` and the file is sourced. The sw
 - `ANTHROPIC_API_KEY` → `ANTHROPIC_AUTH_TOKEN`
 - `KIMI_API_KEY` → `ANTHROPIC_AUTH_TOKEN`
 - `ZAI_API_KEY` → `ANTHROPIC_AUTH_TOKEN`
+- `MINIMAX_API_KEY` → `ANTHROPIC_AUTH_TOKEN`
 
 ### Provider Not Switching
 

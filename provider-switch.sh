@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Claude Code Multi-Provider Switcher
-# Seamlessly switch between Anthropic, Kimi, and GLM APIs
+# Seamlessly switch between Anthropic, Kimi, GLM, and MiniMax APIs
 
 CLAUDE_PROVIDER_STATE_FILE="${CLAUDE_PROVIDER_STATE_FILE:-$HOME/.claude/provider.current}"
 CLAUDE_PROVIDER_ENV_FILE="${CLAUDE_PROVIDER_ENV_FILE:-$HOME/.claude/.env}"
@@ -26,12 +26,12 @@ cc-use() {
   local provider="$1"
 
   case "$provider" in
-    anthropic|kimi|glm)
+    anthropic|kimi|glm|minimax)
       printf "%s\n" "$provider" > "$CLAUDE_PROVIDER_STATE_FILE"
       printf "Claude provider set to: %s\n" "$provider"
       ;;
     *)
-      echo "Usage: cc-use {anthropic|kimi|glm}"
+      echo "Usage: cc-use {anthropic|kimi|glm|minimax}"
       return 1
       ;;
   esac
@@ -74,8 +74,17 @@ _cc_apply_provider_env() {
       export ANTHROPIC_BASE_URL="https://api.z.ai/api/anthropic"
       export CLAUDE_CODE_MODEL="glm-5"
       ;;
+    minimax)
+      if [ -z "${MINIMAX_API_KEY:-}" ]; then
+        echo "MiniMax key not found. Set MINIMAX_API_KEY in $CLAUDE_PROVIDER_ENV_FILE."
+        return 1
+      fi
+      unset ANTHROPIC_API_KEY
+      export ANTHROPIC_AUTH_TOKEN="$MINIMAX_API_KEY"
+      export ANTHROPIC_BASE_URL="https://api.minimaxi.chat/anthropic"
+      ;;
     *)
-      echo "Unknown provider '$provider'. Use: cc-use {anthropic|kimi|glm}"
+      echo "Unknown provider '$provider'. Use: cc-use {anthropic|kimi|glm|minimax}"
       return 1
       ;;
   esac
@@ -86,6 +95,7 @@ cc-status() {
   local anthropic_ok="no"
   local kimi_ok="no"
   local glm_ok="no"
+  local minimax_ok="no"
 
   provider="$(_cc_get_provider)"
   _cc_load_env_file
@@ -93,11 +103,13 @@ cc-status() {
   [ -n "${ANTHROPIC_API_KEY:-}" ] && anthropic_ok="yes"
   [ -n "${KIMI_API_KEY:-${MOONSHOT_API_KEY:-${KIMI_CODING_API_KEY:-}}}" ] && kimi_ok="yes"
   [ -n "${ZAI_API_KEY:-}" ] && glm_ok="yes"
+  [ -n "${MINIMAX_API_KEY:-}" ] && minimax_ok="yes"
 
   echo "Current provider: $provider"
   echo "Anthropic key configured: $anthropic_ok"
   echo "Kimi key configured: $kimi_ok"
   echo "GLM key configured: $glm_ok"
+  echo "MiniMax key configured: $minimax_ok"
 }
 
 cc() {
@@ -117,5 +129,10 @@ cc-kimi() {
 
 cc-glm() {
   cc-use glm || return 1
+  cc "$@"
+}
+
+cc-minimax() {
+  cc-use minimax || return 1
   cc "$@"
 }
