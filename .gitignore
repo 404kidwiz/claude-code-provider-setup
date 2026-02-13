@@ -4,3 +4,5 @@
 .DS_Store
 *.log
 *.bak
+venv/
+__pycache__/
